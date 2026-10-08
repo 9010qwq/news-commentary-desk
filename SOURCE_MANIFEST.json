@@ -3,8 +3,8 @@
   "files": [
     {
       "path": ".github/workflows/windows-build.yml",
-      "bytes": 3440,
-      "sha256": "3864607644fa10e6851e3ed767b55ee1003f5492d0d9600c1674768b66f67931"
+      "bytes": 3419,
+      "sha256": "83d1764ee719f19fb0d12cf4bed9d103609ba98079119555fb6064c3827d95b0"
     },
     {
       "path": ".gitignore",
@@ -18,8 +18,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 9425,
-      "sha256": "015d2239739cee26461ebde7d41ebd3f78c1934f3ec78b290490565ce0837186"
+      "bytes": 9717,
+      "sha256": "bc27ea4fb24f07bbeba1071236b48f0ccaf068278f0d787e2750953e9c8bbb02"
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
@@ -33,8 +33,8 @@
     },
     {
       "path": "docs/RELEASE_NOTES.md",
-      "bytes": 2525,
-      "sha256": "b483e34b0cbddf1122fc37294724952ca3f4af4f39d333cb7c3a9fdad018a30a"
+      "bytes": 3097,
+      "sha256": "c8548c01cb5b876ac9625cc11d82bb209134026a9c5afb896148f2df0ec3b8a5"
     },
     {
       "path": "docs/SECURITY.md",
@@ -43,8 +43,8 @@
     },
     {
       "path": "docs/TEST_REPORT.md",
-      "bytes": 7386,
-      "sha256": "21474fbd3352e4aaa0219557eca87b83b60bbfa898d4348e623775ab8b993e5b"
+      "bytes": 8211,
+      "sha256": "5a30e98d01ffddc15e9147e4a043f23f0bb6a2a7f31b9decf7334c0c04f52621"
     },
     {
       "path": "launch.py",
@@ -153,8 +153,8 @@
     },
     {
       "path": "tests/test_newsdesk.py",
-      "bytes": 18357,
-      "sha256": "f92941bad433dbf9ad0967ab339d186281041822dd9f9af3198b323d20f3908d"
+      "bytes": 18817,
+      "sha256": "5eeb481eb770bc6849bb4e4cdc0b1715f26ccfc9d05222f3cfbc7679cab3329a"
     },
     {
       "path": "tools/build_windows.cmd",
@@ -163,8 +163,8 @@
     },
     {
       "path": "tools/windows_smoke.py",
-      "bytes": 10725,
-      "sha256": "f78d844869b5515e5238b5d50d80134b7e173534f938faa5567768dccb8d4edb"
+      "bytes": 10724,
+      "sha256": "17a8b014ce867601ebb6471f362c821c5ca92f8ebb3f7113fc6adbf3ee57f2f6"
     },
     {
       "path": "安装与启动.cmd",

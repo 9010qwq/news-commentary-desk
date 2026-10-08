@@ -2,9 +2,9 @@
 
 本记录明确区分已通过、被环境阻断和未执行。离线样例/模拟邮件不等于真实联网端到端成功。没有真实 API 费用，没有向任何邮箱发送真实邮件。
 
-## 通过：60 项离线自动化测试
+## 通过：61 项离线自动化测试
 
-命令：`python -m unittest discover -s tests -v`，最新60项在云端 Linux / Python 3.12 环境执行。初始版本54项也在 Windows GitHub Runner / Python 3.11 通过。包括：
+命令：`python -m unittest discover -s tests -v`，最新61项在云端 Linux / Python 3.12 环境执行。初始版本54项也在 Windows GitHub Runner / Python 3.11 通过。包括：
 
 - 日期边界、周四北京时间14:00、前一周四至本周三7个完整自然日、每日时区与周报时区分离、周五不静默补发
 - 五家内置媒体与用户添加公开媒体 URL 校验、本机/IP/保留域名拒绝、拒访和 robots 约束、重定向目标重新校验
@@ -52,7 +52,9 @@
 
 [Windows 运行 #2](https://github.com/9010qwq/news-commentary-desk/actions/runs/37813739763) 已实际启动冻结EXE、同包Chromium及本机界面，但测试脚本使用的字符串求值等待被应用CSP拦截，任务失败，未发布Release。本次保留CSP不变，将两处等待改为Playwright原生locator文本断言；修复后完整冒烟仍需新的CI运行验证，不能沿用失败运行声称通过。
 
-后续工作流新增 `tools/windows_smoke.py`：使用全新临时数据，真正运行刚打包的EXE；通过其诊断入口检查同包Chromium，连接本机UI、保存/重载设置并下载空白周报。空白界面浏览器只允许访问本机测试地址，不调用真实API/SMTP。其后单独使用冻结EXE的生产Fetcher/parse_article/Screenshots，最多一次尝试指定新京报公开原文；正常公网、robots及证书检查，核对标题/日期/署名和PNG尺寸后删除临时截图。只保留元数据或明确阻断原因，不上传新闻HTML、正文或原页截图。这一有界尝试被阻断时不会绕过或重试，也不把空白UI成功改称新闻截图成功。此新增检查在本文件编写时待Windows运行；以对应Actions报告为准。即使通过，也不能替代真实新闻截图与投递端到端验收。
+[Windows 运行 #3](https://github.com/9010qwq/news-commentary-desk/actions/runs/37814615207) 完成了EXE、浏览器、UI及空白双附件下载的必要断言，但最后把含中文的JSON打印到Windows cp1252控制台时失败，Release因此被正确阻止。UTF-8报告与空白UI截图已保存。修复仅将控制台输出改为ASCII转义，UTF-8产物不变；下一轮仅重跑本机成品冒烟，**不再次访问已尝试的新闻URL**。已读取该运行的UTF-8报告：本机功能断言全部通过；指定新京报原文标题、陈广江署名和2026-10-08 16:36时间解析正确，使用冻结EXE与打包Chromium；但原页截图返回“浏览器截图失败或超时；未尝试绕过站点验证或安全限制”，因此真实原页截图仍未验证成功，没有保留原图。
+
+后续工作流新增 `tools/windows_smoke.py`：使用全新临时数据，真正运行刚打包的EXE；通过其诊断入口检查同包Chromium，连接本机UI、保存/重载设置并下载空白周报。空白界面浏览器只允许访问本机测试地址，不调用真实API/SMTP。运行#3曾单独使用冻结EXE的生产Fetcher/parse_article/Screenshots，最多一次尝试指定新京报公开原文；正常公网、robots及证书检查，核对标题/日期/署名和PNG尺寸后删除临时截图。只保留元数据或明确阻断原因，不上传新闻HTML、正文或原页截图。这一有界尝试被阻断时不会绕过或重试，也不把空白UI成功改称新闻截图成功。控制台修复后的完整工作流待下一轮确认；以对应Actions报告为准。即使通过，也不能替代真实新闻截图与投递端到端验收。
 
 预发布默认关闭；只有维护者明确勾选publish_prerelease且完整Windows任务通过，独立release job才使用本次GitHub内置临时token在同仓库创建候选标签/Release。不会创建长期密钥、扩展仓库设置、覆盖既有标签。
 

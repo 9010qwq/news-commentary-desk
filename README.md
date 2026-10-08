@@ -4,6 +4,8 @@
 
 **这是试用候选，请区分源码包和 Windows 便携包。** 如果拿到 Release 中的 `NewsDesk-Windows-Portable.zip`，解压整个文件夹后双击 `NewsDesk.exe`，不需要另装 Python；不能只拷贝 exe。如果拿到源码试用包，则使用下方步骤，需要 Python 3.11+，首次会下载依赖与 Chromium。附一键启动脚本、便携版构建脚本和手动 GitHub 构建流程。未在你的电脑部署、未替你开任何定时服务、未发送真实邮件。项目仓库位于 [GitHub 仓库](https://github.com/9010qwq/news-commentary-desk)，具体构建与发布状态以仓库为准。验证边界见 [测试记录](docs/TEST_REPORT.md)。
 
+> 已知关键限制：Windows本机界面与导出冒烟通过；真实新京报文章元数据读取正确，但原网页截图在CI中失败或超时。原页截图流程尚未验证成功，本版先用于试用与反馈，暂不建议依赖无人值守周报。详情见测试记录。
+
 ## Windows 源码包：从这里开始
 
 1. 把整个包解压到自己的文件夹，如 `D:\NewsDesk`。不要覆盖以前的 LocalDesk 或任何已有 data 文件夹。

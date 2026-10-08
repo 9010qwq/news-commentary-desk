@@ -31,7 +31,7 @@ jobs:
           Copy-Item README.md,LICENSE,THIRD_PARTY_NOTICES.md dist/NewsDesk/
           Copy-Item docs -Destination dist/NewsDesk/ -Recurse
       - name: Run actual Windows portable smoke test
-        run: python tools/windows_smoke.py --exe dist/NewsDesk/NewsDesk.exe --output smoke-output --public-source-once
+        run: python tools/windows_smoke.py --exe dist/NewsDesk/NewsDesk.exe --output smoke-output
       - name: Archive smoke-checked portable folder
         shell: pwsh
         run: Compress-Archive -Path dist/NewsDesk -DestinationPath dist/NewsDesk-Windows-Portable.zip

@@ -184,6 +184,11 @@ class BrowserSmokeTests(unittest.TestCase):
     def test_dashboard_smoke_has_no_csp_sensitive_eval(self):
         source=(Path(__file__).resolve().parent.parent/'tools'/'windows_smoke.py').read_text(encoding='utf-8')
         for unsafe_call in ('.wait_for_function(','.evaluate(','.evaluate_handle('):self.assertNotIn(unsafe_call,source)
+    def test_smoke_stdout_safe_for_windows_cp1252(self):
+        source=(Path(__file__).resolve().parent.parent/'tools'/'windows_smoke.py').read_text(encoding='utf-8')
+        self.assertIn('print(json.dumps(report,ensure_ascii=True,indent=2))',source)
+        self.assertIn("write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')",source)
+        self.assertTrue(json.dumps({'message':'中文验证'},ensure_ascii=True).encode('cp1252'))
     def test_public_source_blocked_no_retry(self):
         with patch('newsdesk.smoke.Fetcher') as factory:
             fetcher=factory.return_value;fetcher.get.side_effect=ValueError('robots denies test')
