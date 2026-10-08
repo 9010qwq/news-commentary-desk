@@ -11,13 +11,13 @@ from newsdesk.store import Store
 from newsdesk.vault import Vault
 from newsdesk.scheduler import due_jobs,week_range,next_schedule
 from newsdesk.sources import parse_article,links,title_hash,canonical
-from newsdesk.network import Fetcher
+from newsdesk.network import Fetcher,network_category
 from newsdesk.exporter import export_package,days,safe_cell,safe_filename
 from newsdesk.mailer import send_package
 from newsdesk.main import create_app
 from newsdesk.collector import collect_day
 from newsdesk.smoke import browser_smoke,public_source_smoke
-from newsdesk.browser import failure_category
+from newsdesk.browser import failure_category,visible_article_ready,wait_for_visible_article
 
 def article(url='https://www.bjnews.com.cn/detail/123.html',title='测试新闻 | 新京报快评',author=''):
     return ('<html><head><meta charset="utf-8"></head><body><div class="bodyTitle"><h1>'+title+'</h1></div><div class="timer">2026-10-08 16:36</div><div class="reporter">编辑：甲乙</div><div id="contentStr">'+('<p>这是一段关于公共事件的评论正文，并对公共政策展开分析，明确表达观点。</p>'*8)+(f'<p>撰稿 / {author}</p>' if author else '')+'</div></body></html>').encode()
@@ -45,6 +45,10 @@ class SourceTests(unittest.TestCase):
         f=Fetcher(httpx.MockTransport(handler),False)
         with self.assertRaises(ValueError):f.get('https://www.news.cn/private/a')
         f.close()
+    def test_network_failure_categories_do_not_echo_url(self):
+        self.assertEqual(network_category(httpx.ConnectTimeout('private https://example.org/token')),'HTTP_CONNECT_TIMEOUT')
+        self.assertEqual(network_category(httpx.ReadTimeout('private payload')),'HTTP_READ_TIMEOUT')
+        self.assertEqual(network_category(httpx.ConnectError('[SSL: CERTIFICATE_VERIFY_FAILED] private host')),'TLS_VERIFICATION_FAILED')
     def test_redirect_robots_denied(self):
         def handler(r):
             if r.url.path=='/robots.txt':return httpx.Response(200,text='User-agent: *\nDisallow: /private')
@@ -182,6 +186,28 @@ class CollectorTests(unittest.TestCase):
         self.run_collect(fail=True);r=self.run_collect();self.assertEqual((r['articles'],r['screenshots']),(5,5))
 
 class BrowserSmokeTests(unittest.TestCase):
+    def fake_ready_page(self,title=True,body=True,challenge=False):
+        from unittest.mock import MagicMock
+        page=MagicMock();outer=MagicMock();inner=MagicMock();outer.count.return_value=1
+        outer.inner_text.return_value='请完成验证' if challenge else (('固定标题测试时评' if title else '别的标题')+' 正文文字'*100)
+        inner.count.return_value=1 if body else 0;inner.nth.return_value.is_visible.return_value=True;inner.nth.return_value.inner_text.return_value='正文文字'*100
+        page.locator.side_effect=lambda selector:outer if selector=='body' else inner
+        return page
+    def test_ready_article_ignores_unrelated_load_event(self):
+        page=self.fake_ready_page();a={'title':'固定标题测试时评','source_id':'bjnews'}
+        wait_for_visible_article(page,a,{'main_http_status':200});page.wait_for_load_state.assert_not_called()
+    def test_ready_requires_expected_title_and_actual_body(self):
+        a={'title':'固定标题测试时评','source_id':'bjnews'}
+        self.assertFalse(visible_article_ready(self.fake_ready_page(title=False),a));self.assertFalse(visible_article_ready(self.fake_ready_page(body=False),a))
+    def test_access_challenge_still_stops(self):
+        a={'title':'固定标题测试时评','source_id':'bjnews'}
+        with self.assertRaises(ValueError):wait_for_visible_article(self.fake_ready_page(challenge=True),a,{'main_http_status':200})
+    def test_ready_http_denial_still_stops(self):
+        with self.assertRaises(ValueError):wait_for_visible_article(self.fake_ready_page(),{'title':'固定标题测试时评','source_id':'bjnews'},{'main_http_status':403})
+    def test_readiness_timeout_is_bounded(self):
+        page=self.fake_ready_page(body=False);diagnostics={}
+        with self.assertRaises(ValueError):wait_for_visible_article(page,{'title':'固定标题测试时评','source_id':'bjnews'},diagnostics,timeout_seconds=0)
+        self.assertEqual(diagnostics['error_category'],'ARTICLE_READINESS_TIMEOUT')
     def test_capture_diagnostics_drop_urls_and_payloads(self):
         self.assertEqual(failure_category(RuntimeError('Page.goto: net::ERR_CERT_AUTHORITY_INVALID at https://private.example/?secret=abc')),'ERR_CERT_AUTHORITY_INVALID')
         self.assertEqual(failure_category(RuntimeError('Refused unsafe-eval by Content Security Policy: secret')),'CSP_EVALUATION_BLOCKED')

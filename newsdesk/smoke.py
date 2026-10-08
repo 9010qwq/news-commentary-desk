@@ -57,7 +57,7 @@ def public_source_smoke(scratch_dir=None):
         report['error_category']=category
         safety_denial=(diagnostic.get('main_http_status') in {401,403,429}
                        or diagnostic.get('navigation_denial')=='ROBOTS_DENIED'
-                       or category in {'SITE_ACCESS_CHALLENGE','ERR_BLOCKED_BY_ADMINISTRATOR','DESTINATION_POLICY_REFUSAL'}
+                       or category in {'SITE_ACCESS_CHALLENGE','ERR_BLOCKED_BY_ADMINISTRATOR','DESTINATION_POLICY_REFUSAL','TLS_VERIFICATION_FAILED'}
                        or str(category).startswith('ERR_CERT')
                        or 'robots 规则禁止' in str(error)
                        or '媒体站点拒绝或限流' in str(error))

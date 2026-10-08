@@ -1,5 +1,5 @@
 {
-  "version": "0.2.0-rc1-diagnostic",
+  "version": "0.2.0-rc2-candidate",
   "files": [
     {
       "path": ".github/workflows/diagnose-capture.yml",
@@ -48,8 +48,8 @@
     },
     {
       "path": "docs/TEST_REPORT.md",
-      "bytes": 9187,
-      "sha256": "3018b49dd9c13921dab39b5d2dc3f37025c4f03f1bf9afd35f1f53653de6a546"
+      "bytes": 9755,
+      "sha256": "2c3e11ce96a321a5007b45a4b826eac5f7ceea2852a0c0f7d85a324cc7db6892"
     },
     {
       "path": "launch.py",
@@ -68,8 +68,8 @@
     },
     {
       "path": "newsdesk/browser.py",
-      "bytes": 7379,
-      "sha256": "8025788dd94bb2783f21a03aafa3a1bf751579a1c9060da78cd062b87b8cd9fd"
+      "bytes": 8523,
+      "sha256": "3bd8e9bac38efa09127dcf7408dffcaabf9babf9042825f4b5e58c8f173e280e"
     },
     {
       "path": "newsdesk/collector.py",
@@ -98,8 +98,8 @@
     },
     {
       "path": "newsdesk/network.py",
-      "bytes": 3491,
-      "sha256": "7b840f2365a2c6bc4821a1c8597ade2f76f5940df60e5f69de9e5113b9f47c38"
+      "bytes": 4403,
+      "sha256": "381e6a95e4948be5c379b48730a392c1557899146ac296269d2312037b6c0b72"
     },
     {
       "path": "newsdesk/scheduler.py",
@@ -108,8 +108,8 @@
     },
     {
       "path": "newsdesk/smoke.py",
-      "bytes": 4384,
-      "sha256": "53f6ae021e6168c21a1ddfa1f83e634d94fea5eab1a7cb9259f4d2d7f6743c1c"
+      "bytes": 4410,
+      "sha256": "f2ec349fdf8cce5f3e4e551fdd2fd5916727928ff1f82cb3305077f4f444acea"
     },
     {
       "path": "newsdesk/sources.py",
@@ -158,8 +158,8 @@
     },
     {
       "path": "tests/test_newsdesk.py",
-      "bytes": 20045,
-      "sha256": "813feabf39746255c3012d36f62b49cfbef5be720075a9d2aa5123de6d9c806b"
+      "bytes": 22560,
+      "sha256": "5589c2ff0f8c48f78a498a0a0dfcacdb5e449d61b5d2041a6366addc202712ef"
     },
     {
       "path": "tools/build_windows.cmd",
