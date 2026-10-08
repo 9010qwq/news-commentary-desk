@@ -8,6 +8,8 @@ data/
 !.env.example
 qa_samples/
 qa_output/
+diagnostic-output/
+smoke-output/
 original_source/
 *.png
 *.xlsx

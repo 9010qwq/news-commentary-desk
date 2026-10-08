@@ -186,6 +186,10 @@ class CollectorTests(unittest.TestCase):
         self.run_collect(fail=True);r=self.run_collect();self.assertEqual((r['articles'],r['screenshots']),(5,5))
 
 class BrowserSmokeTests(unittest.TestCase):
+    def test_rc2_requires_frozen_actual_png_not_source_only_or_blank_ui(self):
+        from tools.windows_smoke import verified_public_capture
+        good={'status':'passed','frozen':True,'bundled_browser':True,'screenshot':{'format':'PNG','width':1440,'height':3600,'bytes':100000,'retained':False}}
+        self.assertTrue(verified_public_capture(good));self.assertFalse(verified_public_capture(good|{'frozen':False}));self.assertFalse(verified_public_capture({'ok':True,'frozen':True,'bundled_browser':True}))
     def fake_ready_page(self,title=True,body=True,challenge=False):
         from unittest.mock import MagicMock
         page=MagicMock();outer=MagicMock();inner=MagicMock();outer.count.return_value=1

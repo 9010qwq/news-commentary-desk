@@ -1,10 +1,10 @@
-# 评论收集台 · 小栈 NewsDesk 0.2
+# 评论收集台 · 小栈 NewsDesk 0.2.0-rc2
 
 一个给个人使用、可自行分发的本地新闻时评整理工具。打开一个中文页面，设置来源和邮箱，收集原文、截图，按日期导出 Excel 和截图 ZIP。不需要 ChatGPT 订阅；可选的模型 API 由你选择的供应商计费。
 
 **这是试用候选，请区分源码包和 Windows 便携包。** 如果拿到 Release 中的 `NewsDesk-Windows-Portable.zip`，解压整个文件夹后双击 `NewsDesk.exe`，不需要另装 Python；不能只拷贝 exe。如果拿到源码试用包，则使用下方步骤，需要 Python 3.11+，首次会下载依赖与 Chromium。附一键启动脚本、便携版构建脚本和手动 GitHub 构建流程。未在你的电脑部署、未替你开任何定时服务、未发送真实邮件。项目仓库位于 [GitHub 仓库](https://github.com/9010qwq/news-commentary-desk)，具体构建与发布状态以仓库为准。验证边界见 [测试记录](docs/TEST_REPORT.md)。
 
-> 已知关键限制：Windows本机界面与导出冒烟通过；真实新京报文章元数据读取正确，但原网页截图在CI中失败或超时。原页截图流程尚未验证成功，本版先用于试用与反馈，暂不建议依赖无人值守周报。详情见测试记录。
+> rc2 修复了整页加载事件被超时资源拖住的问题：改为核对主请求成功及真实可见的标题/正文。该修复已在Windows源码实测中取得真实新京报原页PNG；rc2预发布还要求打包EXE再次通过同一真实截图检查。范围仅是一篇指定原文，没有证明所有媒体、每天5篇、真实邮件和长期定时流程，详见测试记录。
 
 ## Windows 源码包：从这里开始
 
@@ -75,7 +75,7 @@ macOS/Linux 可运行 `sh start_unix.sh`，首次也会询问下载；本次未�
 2. 构建会打包 Python 应用和 Chromium，体积较大；生成 `dist/NewsDesk/NewsDesk.exe`。分发整个 NewsDesk 文件夹，不能只拷贝 exe
 3. 必须在干净 Windows 电脑完成 [发布验收单](docs/RELEASE_CHECKLIST.md) 后，才能称为可分发成品。代码签名和 Windows 安全提示需发布者自行处理，不能要求用户关闭安全防护
 
-初始 Windows 构建已通过，附加的成品 EXE/打包 Chromium/空白界面冒烟以对应 Actions 实际结果为准。手动构建默认不发布；维护者勾选 publish_prerelease 后，仅在成品冒烟全部通过时创建同仓库 v0.2.0-rc1 预发布及校验文件。已有同名标签或 Release 会中止，不覆盖。公开仓库的代码、日志与产物可公开可见。
+初始 Windows 构建已通过，附加的成品 EXE/打包 Chromium/空白界面冒烟以对应 Actions 实际结果为准。手动构建默认不发布；维护者勾选 publish_prerelease 后，仅在成品冒烟全部通过时创建同仓库 v0.2.0-rc2 预发布及校验文件。已有同名标签或 Release 会中止，不覆盖。公开仓库的代码、日志与产物可公开可见。
 
 ## 开发
 

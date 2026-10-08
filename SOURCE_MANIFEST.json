@@ -1,5 +1,5 @@
 {
-  "version": "0.2.0-rc2-candidate",
+  "version": "0.2.0-rc2",
   "files": [
     {
       "path": ".github/workflows/diagnose-capture.yml",
@@ -8,13 +8,13 @@
     },
     {
       "path": ".github/workflows/windows-build.yml",
-      "bytes": 3419,
-      "sha256": "83d1764ee719f19fb0d12cf4bed9d103609ba98079119555fb6064c3827d95b0"
+      "bytes": 3443,
+      "sha256": "4ec1fd00a7c44d68c9ac81992efa8f36daa0b9e3cd766cc445dd1669744efb73"
     },
     {
       "path": ".gitignore",
-      "bytes": 148,
-      "sha256": "a2076b663c9147aeba264a66b73d17331d3bc29d2e2c661962b07716aa1bf3ca"
+      "bytes": 181,
+      "sha256": "9fcde458d4903c19c47afa1f82ac2b8185f43c4a7be5d41114237db15a17d439"
     },
     {
       "path": "LICENSE",
@@ -23,8 +23,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 9717,
-      "sha256": "bc27ea4fb24f07bbeba1071236b48f0ccaf068278f0d787e2750953e9c8bbb02"
+      "bytes": 9829,
+      "sha256": "393ec3907fdfe8ed79a01d6c7b149c6e93e90d36a591be425d5c5c9dc5eb3c45"
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
@@ -38,8 +38,8 @@
     },
     {
       "path": "docs/RELEASE_NOTES.md",
-      "bytes": 3097,
-      "sha256": "c8548c01cb5b876ac9625cc11d82bb209134026a9c5afb896148f2df0ec3b8a5"
+      "bytes": 3908,
+      "sha256": "ec5a5e3cf2bd93a64acc205347b688f1ccfbf1f6c8f2a9937f0ff354edcef5b6"
     },
     {
       "path": "docs/SECURITY.md",
@@ -48,8 +48,8 @@
     },
     {
       "path": "docs/TEST_REPORT.md",
-      "bytes": 9755,
-      "sha256": "2c3e11ce96a321a5007b45a4b826eac5f7ceea2852a0c0f7d85a324cc7db6892"
+      "bytes": 10835,
+      "sha256": "b3c3bcad1c1919a091e826cdb72b19e31a1071cbe9cb6168cdc603828e7e4465"
     },
     {
       "path": "launch.py",
@@ -58,8 +58,8 @@
     },
     {
       "path": "newsdesk/__init__.py",
-      "bytes": 22,
-      "sha256": "1551cf04691f85b4038bfcf7bf43e2289ad75ea5cec74bc65bfd556aa3498bb5"
+      "bytes": 26,
+      "sha256": "d51194f94305e21a79a520cd985203a13f94b978cac3bfddc8537549fad4a83f"
     },
     {
       "path": "newsdesk/ai.py",
@@ -158,8 +158,8 @@
     },
     {
       "path": "tests/test_newsdesk.py",
-      "bytes": 22560,
-      "sha256": "5589c2ff0f8c48f78a498a0a0dfcacdb5e449d61b5d2041a6366addc202712ef"
+      "bytes": 23074,
+      "sha256": "29af831c7d617980c3bf162d15b6ae6b309d0ebab24050eef6820dd67109d2ea"
     },
     {
       "path": "tools/build_windows.cmd",
@@ -168,8 +168,8 @@
     },
     {
       "path": "tools/windows_smoke.py",
-      "bytes": 10724,
-      "sha256": "17a8b014ce867601ebb6471f362c821c5ca92f8ebb3f7113fc6adbf3ee57f2f6"
+      "bytes": 11579,
+      "sha256": "0d4a70ddc7ccf17a7029a9ecf7eb2eb7309790110b32be4e9f4216de0225725d"
     },
     {
       "path": "安装与启动.cmd",

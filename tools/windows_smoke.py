@@ -13,12 +13,21 @@ from playwright.sync_api import sync_playwright,expect
 def check(condition,message):
     if not condition:raise AssertionError(message)
 
+def verified_public_capture(public):
+    shot=public.get('screenshot',{})
+    return (public.get('status')=='passed' and public.get('frozen') is True and public.get('bundled_browser') is True
+            and shot.get('format')=='PNG' and isinstance(shot.get('width'),int) and shot['width']>=800
+            and isinstance(shot.get('height'),int) and shot['height']>=600
+            and isinstance(shot.get('bytes'),int) and shot['bytes']>=8000 and shot.get('retained') is False)
+
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--exe',type=Path,required=True)
     parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--public-source-once',action='store_true',help='Also try one fixed public article; never retain its screenshot or body')
+    parser.add_argument('--require-public-source',action='store_true',help='Fail acceptance unless the frozen public-page PNG check passes')
     args=parser.parse_args();exe=args.exe.resolve();output=args.output.resolve();output.mkdir(parents=True,exist_ok=True)
+    if args.require_public_source:args.public_source_once=True
     check(exe.is_file(),'Portable executable is missing')
     report={'ok':False,'tests':[],'external_api_calls':0,'smtp_messages':0,'scheduled_news_collection':False,'public_source_attempted':False,'real_news_screenshots_verified':False}
     server=None;server_log=None;temporary=tempfile.TemporaryDirectory(prefix='newsdesk-windows-smoke-')
@@ -111,10 +120,12 @@ def main():
                 if attempt is not None and attempt.returncode==0 and public_result.is_file():
                     public=json.loads(public_result.read_text(encoding='utf-8'))
                     report['public_source']=public
-                    report['real_news_screenshots_verified']=public.get('status')=='passed' and public.get('frozen') is True and public.get('bundled_browser') is True
+                    report['real_news_screenshots_verified']=verified_public_capture(public)
                 else:
-                    report['public_source']={'status':'blocked','attempts':1,'error':'Frozen public-source diagnostic timed out after 180 seconds' if attempt is None else 'Frozen public-source diagnostic did not return a report','screenshot_retained':False}
+                    report['public_source']={'status':'failed','safety_denial_confirmed':False,'attempts':1,'error':'Frozen public-source diagnostic timed out after 180 seconds' if attempt is None else 'Frozen public-source diagnostic did not return a report','screenshot_retained':False}
                 report['tests'].append('one public article attempted through frozen app; inspect public_source status separately')
+                if args.require_public_source:
+                    check(report['real_news_screenshots_verified'],'Required frozen original-page PNG check failed or was blocked; inspect public_source; no release')
             report['ok']=True
     except Exception as error:
         report['error']=str(error);raise
