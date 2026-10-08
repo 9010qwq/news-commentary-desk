@@ -1,0 +1,170 @@
+{
+  "version": "0.2.0-rc1",
+  "files": [
+    {
+      "path": ".github/workflows/windows-build.yml",
+      "bytes": 1272,
+      "sha256": "cddf9bcf4c749ef7c6ed214942b583249103d5d6c2d8d5d6149b06ba1345ec24"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 148,
+      "sha256": "a2076b663c9147aeba264a66b73d17331d3bc29d2e2c661962b07716aa1bf3ca"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 1079,
+      "sha256": "7820223da556dbd202c208c6e19b56fb0a9e1c42d3f0d7f734d05df35010d119"
+    },
+    {
+      "path": "README.md",
+      "bytes": 9080,
+      "sha256": "dee30f4eedfaae497bec8f9ae8a702c2eef26f58beffcabba96498052bd4acb4"
+    },
+    {
+      "path": "THIRD_PARTY_NOTICES.md",
+      "bytes": 2702,
+      "sha256": "b29a66ebe0357a00aa3b1c7642deb3734fcf26e2914b95a8c69f2ce8a001d833"
+    },
+    {
+      "path": "docs/RELEASE_CHECKLIST.md",
+      "bytes": 2278,
+      "sha256": "c9e38d8bb4ffd82e48ea48731ae846ba2cd33984a668567f0b84d20dd590e16d"
+    },
+    {
+      "path": "docs/SECURITY.md",
+      "bytes": 2154,
+      "sha256": "39f0d4bb281c5487dce314aa11af832def517053fbe6cbada3ec33052be3bfa3"
+    },
+    {
+      "path": "docs/TEST_REPORT.md",
+      "bytes": 5369,
+      "sha256": "97cac8ccd03598f485f1012450d82d5117f9c62edfe52124bc0646248c42113a"
+    },
+    {
+      "path": "launch.py",
+      "bytes": 2454,
+      "sha256": "b241e8e406084ef52b89006b4b334a8586fc81319ff0bc73933b2cfe6f29f05f"
+    },
+    {
+      "path": "newsdesk/__init__.py",
+      "bytes": 22,
+      "sha256": "1551cf04691f85b4038bfcf7bf43e2289ad75ea5cec74bc65bfd556aa3498bb5"
+    },
+    {
+      "path": "newsdesk/ai.py",
+      "bytes": 2460,
+      "sha256": "70dc1760f19b11ba7c41b7de0a0312db61ab91a26b1bac7f7051575f6514bad2"
+    },
+    {
+      "path": "newsdesk/browser.py",
+      "bytes": 4458,
+      "sha256": "867da6ca47a8510c63fb6538ee326c5faa3c41a4b5f49dc7afa5ad929222d92a"
+    },
+    {
+      "path": "newsdesk/collector.py",
+      "bytes": 5116,
+      "sha256": "68e8de36c7d91fa0a26419509b9a3941035b7898a1dcc1f8e9e24bac95562d84"
+    },
+    {
+      "path": "newsdesk/config.py",
+      "bytes": 5201,
+      "sha256": "ff376b36a7f13dc812879274cf06b796840afabe48690e03f303fed6753b92a8"
+    },
+    {
+      "path": "newsdesk/exporter.py",
+      "bytes": 5263,
+      "sha256": "dd1e41bb2c40f7c0f656d47c215bae5aa7be7b6ec9f059e2d385522374b6ec72"
+    },
+    {
+      "path": "newsdesk/mailer.py",
+      "bytes": 3679,
+      "sha256": "30aba6e3fc1a0abb9eb5e1055be91ccd19fa2546fb718cf6921a20ec3ec53d5a"
+    },
+    {
+      "path": "newsdesk/main.py",
+      "bytes": 13385,
+      "sha256": "b5d8fa4be0b74d236f6c915f6b2a53cf0b0a5635b0a9da89b0e02c036ae8c2f7"
+    },
+    {
+      "path": "newsdesk/network.py",
+      "bytes": 3491,
+      "sha256": "7b840f2365a2c6bc4821a1c8597ade2f76f5940df60e5f69de9e5113b9f47c38"
+    },
+    {
+      "path": "newsdesk/scheduler.py",
+      "bytes": 1724,
+      "sha256": "663570e81b31736c832dd970dcb792c7b2ad487c17796ab3d68acc4502eb0d30"
+    },
+    {
+      "path": "newsdesk/sources.py",
+      "bytes": 12530,
+      "sha256": "26073a9b0aaf3e1bcf4b095762b8a3c47e242216236eb2f1cec4bb8868c25cef"
+    },
+    {
+      "path": "newsdesk/static/app.js",
+      "bytes": 29795,
+      "sha256": "38fe5cf42eadc3180d4a9fd08deade1fbaeee3968edb35cbb0de984ae96cbea9"
+    },
+    {
+      "path": "newsdesk/static/index.html",
+      "bytes": 16260,
+      "sha256": "43cb9ad498ec737c81bc37d4dca2b447daef811b92b374049271146aa155fa9e"
+    },
+    {
+      "path": "newsdesk/static/style.css",
+      "bytes": 21131,
+      "sha256": "c0f632c2660a4fe2a3778b52506d3f74f4525aeddcac043828c55a2b215ec642"
+    },
+    {
+      "path": "newsdesk/store.py",
+      "bytes": 4411,
+      "sha256": "5040d815896a53715f301ec46dd4cced86c2d7123dee665c85a14db55c16f72d"
+    },
+    {
+      "path": "newsdesk/vault.py",
+      "bytes": 1971,
+      "sha256": "987796329efa2778194901cb8bdb999649245c89a826abae23a0af5e0dfd37e8"
+    },
+    {
+      "path": "requirements.txt",
+      "bytes": 180,
+      "sha256": "4499d53f05d2018aa55b3b2247591a8ef51c9c03e174f613739014f973795b99"
+    },
+    {
+      "path": "start_unix.sh",
+      "bytes": 454,
+      "sha256": "1f83270577d63683f0984971f5aa45ac3a71fa64e5645f5fa474c973b61f1ccd"
+    },
+    {
+      "path": "start_windows.cmd",
+      "bytes": 1670,
+      "sha256": "7a14b3f17f315091fe208c1806d79d6c901aabecce7e0a39c20536fc8a728331"
+    },
+    {
+      "path": "tests/test_newsdesk.py",
+      "bytes": 14666,
+      "sha256": "746a0d7f9d4d5507a96059be004fa7ae6bffc14ed71bc86794eb43fa246eb0e4"
+    },
+    {
+      "path": "tools/build_windows.cmd",
+      "bytes": 1155,
+      "sha256": "730e315c7f0c7fff6f036a077ceaa54a4b2f4a3e2e5b6719a4e565978671fe73"
+    },
+    {
+      "path": "安装与启动.cmd",
+      "bytes": 1670,
+      "sha256": "7a14b3f17f315091fe208c1806d79d6c901aabecce7e0a39c20536fc8a728331"
+    }
+  ],
+  "excluded": [
+    "original_source",
+    "qa_samples",
+    "qa_output",
+    "data",
+    ".venv",
+    "real news full text",
+    "real screenshots",
+    "user secrets"
+  ]
+}

@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>评论收集台 · 每天一点积累</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#daily">跳到每日采集</a>
+  <header class="site-header">
+    <div class="brand"><span class="brand-icon" aria-hidden="true">评</span><div><strong>评论收集台</strong><span>NEWS COMMENTARY DESK</span></div></div>
+    <nav aria-label="页面导航"><a href="#daily">每日采集</a><a href="#exports">导出与发送</a><a href="#settings">设置</a></nav>
+    <span class="connection" id="connection"><i></i><span>正在连接本机</span></span>
+  </header>
+
+  <main>
+    <section class="intro" aria-labelledby="page-title">
+      <div><p class="eyebrow">每天一点积累 · 每周一份整理</p><h1 id="page-title">把好评论，<span>留存下来。</span></h1><p class="intro-copy">按发表日期收集新闻评论，保留原文链接与网页截图，随时整理成一份资料。</p></div>
+      <div class="today-card"><span id="today-label">本机采集工具</span><strong id="today-value">准备就绪</strong><small>资料保存在这台电脑上</small></div>
+    </section>
+
+    <div class="notice notice-warm"><span aria-hidden="true">◷</span><p><strong>定时任务需要电脑开机，并保持程序运行。</strong>关闭程序、关机或休眠会停止采集和发送；下次打开后，可手动补采遗漏日期。本工具不会设置系统开机自启。</p></div>
+
+    <section class="welcome card" id="welcome" aria-labelledby="welcome-title">
+      <div class="section-top"><div><p class="eyebrow">第一次使用</p><h2 id="welcome-title">三步，开始收集</h2></div><button class="text-button" id="hide-welcome" type="button" aria-label="收起新手说明">收起说明 ×</button></div>
+      <ol class="steps"><li><span>01</span><div><strong>选好来源</strong><p>已预选五家媒体，默认每天共 5 篇</p><a href="#settings">查看采集设置 ↗</a></div></li><li><span>02</span><div><strong>开始当天采集</strong><p>选择日期，点击「立即采集」</p><a href="#daily">前往每日采集 ↗</a></div></li><li><span>03</span><div><strong>导出，或设置邮件</strong><p>下载 ZIP 和 Excel；邮件发送可选</p><a href="#exports">整理我的资料 ↗</a></div></li></ol>
+    </section>
+
+    <div id="message" class="notice message" role="status" aria-live="polite" hidden></div>
+
+    <section class="workspace" id="daily" aria-labelledby="daily-title">
+      <div class="workspace-main card">
+        <div class="section-top daily-heading"><div><p class="eyebrow">DAILY COLLECTION</p><h2 id="daily-title">每日采集</h2></div><div class="date-actions"><label class="sr-only" for="day">文章发表日期</label><input id="day" type="date" required><button id="collect" class="button primary" type="button"><span aria-hidden="true">＋</span>立即采集</button></div></div>
+        <p class="helper date-helper">日期按文章发表时间归档。历史补采的截图时间为实际采集时间，两者分别保留。</p>
+        <details class="supplement"><summary>补充媒体原文链接 <span>可选</span></summary><label for="article-urls" class="helper">每行一个原文网址。可填写其他公开媒体链接，点击「立即采集」时一同处理；解析失败会说明原因。</label><textarea id="article-urls" rows="3" placeholder="https://…"></textarea></details>
+        <div class="metrics"><div><span>当天已收集</span><strong id="count">0<small> 篇</small></strong></div><div><span>完整资料目标</span><strong id="target">5<small> 篇</small></strong></div><div><span>截图待处理 / 失败</span><strong id="shot-failed">0<small> 篇</small></strong></div></div>
+        <div class="collection-notice" id="shortfall">尚未加载当天资料</div>
+        <div class="job-panel" id="job-panel" hidden><span class="spinner" aria-hidden="true"></span><div><strong id="job-title">正在采集</strong><p id="job-detail">请保持程序运行，结果会自动更新</p></div></div>
+        <div class="article-toolbar"><h3>已收集的评论</h3><button id="refresh" class="text-button" type="button">↻ 刷新</button></div>
+        <div class="article-list" id="article-list" aria-live="polite" aria-busy="true"><div class="empty-state"><span aria-hidden="true">▤</span><h3>正在读取本机资料</h3><p>首次采集可能需要几分钟</p></div></div>
+      </div>
+
+      <aside class="side-column">
+        <section class="card routine-card" aria-labelledby="routine-title"><span class="small-label">MY ROUTINE</span><h2 id="routine-title">收集计划</h2><div class="schedule-item"><span class="schedule-dot"></span><div><strong>每日采集</strong><p id="daily-schedule">每天 20:00</p><span class="badge neutral" id="daily-enabled">读取中</span></div></div><div class="schedule-item"><span class="schedule-dot light"></span><div><strong>每周整理邮件</strong><p>周四 14:00 · 北京时间</p><span class="badge neutral" id="weekly-enabled">默认关闭</span></div></div><p class="helper">周报包含发送日前 7 个完整自然日，不含发送当天。</p><div class="week-range"><span>本期周报范围</span><strong id="week-range">正在读取</strong><p id="next-schedule" class="helper"></p></div><a class="inline-link" href="#settings">调整计划与邮件设置 →</a></section>
+        <section class="card source-card" aria-labelledby="source-title"><h2 id="source-title">采集来源</h2><p class="helper">从内置来源与补充的公开媒体栏目查找评论</p><ul id="active-sources" class="active-sources"></ul><p class="source-note">有多少，收多少。未找到足量合适文章时，如实标记不足，不用无关内容补齐。</p></section>
+      </aside>
+    </section>
+
+    <section class="card export-card" id="exports" aria-labelledby="exports-title">
+      <div class="section-top"><div><p class="eyebrow">KEEP & SHARE</p><h2 id="exports-title">把积累，整理成资料</h2></div><span class="format-badge">ZIP + XLSX</span></div>
+      <p class="section-copy">ZIP 打包可用的原网页截图与清单，Excel 汇总文章信息、发表时间、采集时间和状态。</p>
+      <div class="range-row"><label>开始日期<input id="range-start" type="date" required></label><span class="range-dash" aria-hidden="true">—</span><label>结束日期<input id="range-end" type="date" required></label><button id="use-week" class="text-button" type="button">使用本期周报范围</button></div>
+      <div class="export-actions"><button id="export" class="button primary" type="button">生成并下载资料</button><button id="backfill" class="button secondary" type="button">补采这个时间段</button><button id="send" class="button secondary" type="button">邮件发送…</button></div>
+      <p class="helper">在线补采限最近 31 天，只能读取来源网站当前仍可访问的历史文章；不保证每一天都能补足。截图失败会保留记录，不冒充成功。</p>
+      <div id="downloads" class="downloads" hidden aria-live="polite"></div>
+    </section>
+
+    <section class="card settings-card" id="settings" aria-labelledby="settings-title">
+      <details id="settings-details"><summary><div><p class="eyebrow">MAKE IT YOURS</p><h2 id="settings-title">采集与发送设置</h2><p>来源、时间、邮件与可选 AI 服务</p></div><span class="summary-toggle" aria-hidden="true">＋</span></summary>
+        <form id="settings-form">
+          <fieldset><legend><span>01</span>采集偏好</legend><label class="field-label">媒体来源 <small>至少选择一个</small></label><div id="source-options" class="source-options"></div><div class="form-grid three"><label>每天共收集几篇<input id="target-count" type="number" min="1" max="20" value="5" required><small>所有来源合计，不是每家媒体 5 篇</small></label><label>每日采集时间<input id="daily-time" type="time" value="20:00" required></label><label>每日任务时区<input id="timezone" type="text" value="Asia/Shanghai" required><small>北京时间填写 Asia/Shanghai</small></label></div><label class="check-row"><input id="auto-collect" type="checkbox"><span>程序运行时，每天定时采集</span></label><label class="check-row spaced"><input id="media-balance" type="checkbox" checked><span>优先兼顾不同媒体，有合适文章时尽量多样</span></label><p class="helper">不会为了覆盖每一家媒体而强行凑数。</p><div class="form-grid two keyword-grid"><label>希望包含的关键词<textarea id="include-keywords" rows="3" placeholder="每行一个关键词，可留空"></textarea></label><label>排除的关键词<textarea id="exclude-keywords" rows="3" placeholder="每行一个关键词，可留空"></textarea></label></div><label>补充媒体栏目网址<textarea id="custom-source-urls" rows="3" placeholder="每行一个栏目网址，支持其他公开媒体，兼容性以实际结果为准"></textarea><small>用于发现文章；单篇原文请填写在「每日采集」区域</small></label></fieldset>
+
+          <fieldset><legend><span>02</span>邮件发送 <em>可选</em></legend><p class="helper field-intro">先填写邮箱的 SMTP 配置。未开启周报时，只有你点击并确认「邮件发送」才会发送。</p><div class="form-grid three"><label>SMTP 服务器<input id="smtp-host" type="text" placeholder="例如 smtp.qq.com" autocomplete="off"></label><label>端口<input id="smtp-port" type="number" min="1" max="65535" value="465"></label><label>加密方式<select id="smtp-mode"><option value="ssl">SSL / TLS（通常为 465）</option><option value="starttls">STARTTLS（通常为 587）</option></select></label></div><div class="form-grid two"><label>SMTP 登录账号<input id="smtp-username" type="text" placeholder="通常是完整邮箱地址" autocomplete="off"></label><label>SMTP 密码 / 授权码<input id="smtp-password" type="password" placeholder="未填写；留空保留本次已配置的密码" autocomplete="new-password"><small id="smtp-secret-status">密码不会显示在页面或导出文件中</small></label><label>发件邮箱<input id="smtp-from" type="email" placeholder="yourname@example.com" autocomplete="off"></label><label>收件邮箱<input id="smtp-to" type="email" placeholder="收取资料的邮箱地址" autocomplete="off"></label></div><div class="form-grid two"><label>单封附件上限（MB）<input id="max-message-mb" type="number" min="1" max="100" value="20"><small>附件过大时会提示；请按邮箱限制设置</small></label><div class="weekly-permission"><label class="check-row"><input id="weekly-email" type="checkbox"><span>启用每周四 14:00 自动发送</span></label><p class="helper">北京时间，发送此前 7 个完整自然日的评论资料。勾选并保存即授权按此计划发送到上方邮箱，程序须保持运行。</p></div></div></fieldset>
+
+          <fieldset><legend><span>03</span>AI 辅助筛选 <em>可选</em></legend><label class="check-row"><input id="api-enabled" type="checkbox"><span>使用兼容 OpenAI 的 API 辅助判断评论文章</span></label><p class="helper field-intro">不开启也能使用。开启后，候选文章内容会提交给你填写的服务商，可能产生该服务商的费用。</p><div class="form-grid two"><label>API Base URL<input id="api-base-url" type="url" placeholder="https://api.example.com/v1" autocomplete="off"></label><label>模型名称<input id="api-model" type="text" placeholder="填写服务商提供的模型名称" autocomplete="off"></label></div><label class="api-limit">每天最多调用 API 几次<input id="api-daily-limit" type="number" min="1" max="200" value="30"><small>达到上限后不再调用；实际收费以服务商为准</small></label><label>API Key<input id="api-key" type="password" placeholder="可选；留空保留本次已配置的密钥" autocomplete="new-password"><small id="api-secret-status">密钥仅用于本机程序向你指定的服务商发起请求</small></label></fieldset>
+
+          <div class="secret-box"><label class="check-row"><input id="remember-secrets" type="checkbox"><span>将密码和 API Key 保存到 Windows 凭据管理器</span></label><p class="helper">未勾选时，新输入的密码和密钥仅在本次程序运行中使用，重启后需要重新填写。系统安全存储不可用时，不会改用明文文件保存。</p><p class="helper" id="credential-status"></p></div>
+          <div class="form-footer"><p>普通设置与文章保存在本机<br><span>密码和密钥输入框将在保存成功后清空</span></p><button id="save-settings" class="button primary" type="submit">保存设置</button></div>
+        </form>
+      </details>
+    </section>
+
+    <section class="card rule-card" aria-labelledby="rules-title"><div><p class="eyebrow">A SMALL ADJUSTMENT</p><h2 id="rules-title">用一句话调整偏好</h2><p class="helper">例如「为什么漏了这篇？」「多关注教育，排除体育」。结合近期运行记录说明原因，先查看建议，再决定是否应用；只调整关键词与补充栏目。需要已配置的 AI 服务，也可以在设置中手动填写。</p></div><div class="rule-input-row"><label for="rule-message" class="sr-only">描述希望调整的采集偏好</label><textarea id="rule-message" rows="2" placeholder="告诉我你更想收集什么…" maxlength="1500"></textarea><button id="propose-rule" class="button secondary" type="button">生成建议</button></div><div id="rule-proposal" class="rule-proposal" hidden><strong>建议修改</strong><p id="rule-summary"></p><ul id="rule-changes"></ul><p class="helper">确认后更新本机采集规则；不会更改邮件收件人、自动发送或密码。</p><div class="proposal-actions"><button id="apply-rule" class="button primary" type="button">应用这些调整</button><button id="dismiss-rule" class="text-button" type="button">暂不调整</button></div></div></section>
+
+    <section class="card activity-card" aria-labelledby="activity-title"><details><summary><h2 id="activity-title">最近运行记录</h2><span class="summary-toggle" aria-hidden="true">＋</span></summary><ul id="events" class="events"><li>暂无记录</li></ul></details></section>
+    <footer class="page-footer"><span>评论收集台</span><p>保留来源，尊重版权。资料用于个人阅读与整理。</p><button id="show-welcome" type="button" class="text-button">查看新手说明</button></footer>
+  </main>
+
+  <dialog id="send-dialog" aria-labelledby="send-title"><form method="dialog"><button class="dialog-close text-button" value="cancel" aria-label="取消发送">×</button><span class="small-label">CONFIRM BEFORE SENDING</span><h2 id="send-title">确认发送这份资料？</h2><p>将从本机配置的邮箱发送所选日期范围的评论资料与附件。</p><dl class="send-details"><div><dt>发件邮箱</dt><dd id="confirm-from"></dd></div><div><dt>收件邮箱</dt><dd id="confirm-to"></dd></div><div><dt>日期范围</dt><dd id="confirm-range"></dd></div></dl><p class="helper">包含文章信息、原文链接、可用截图与汇总表。发送后无法从对方邮箱撤回。</p><label class="check-row confirm-check"><input id="confirm-send-check" type="checkbox"><span>我确认收件邮箱及以上内容，并同意发送</span></label><div class="dialog-actions"><button class="button secondary" value="cancel">取消</button><button class="button primary" id="confirm-send" type="button" disabled>确认发送</button></div></form></dialog>
+  <dialog id="shot-dialog" class="shot-dialog" aria-labelledby="shot-title"><div class="shot-header"><h2 id="shot-title">网页截图</h2><button class="text-button" id="close-shot" type="button" aria-label="关闭截图">关闭 ×</button></div><p id="shot-caption" class="helper"></p><img id="shot-image" alt="文章网页的采集截图"></dialog>
+</body>
+</html>

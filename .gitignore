@@ -1,0 +1,17 @@
+.venv/
+__pycache__/
+*.pyc
+data/
+*.sqlite3*
+*.log
+.env*
+!.env.example
+qa_samples/
+qa_output/
+original_source/
+*.png
+*.xlsx
+*.zip
+build/
+dist/
+*.spec
