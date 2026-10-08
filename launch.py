@@ -1,5 +1,5 @@
 """Local-only launcher; never installs startup tasks or changes security settings."""
-import argparse,os,socket,sys,threading,time,urllib.request,webbrowser
+import argparse,json,os,socket,sys,threading,time,urllib.request,webbrowser
 from pathlib import Path
 
 def main():
@@ -8,7 +8,22 @@ def main():
     parser.add_argument('--port',type=int,default=8768)
     parser.add_argument('--data-dir',type=Path)
     parser.add_argument('--no-browser',action='store_true')
+    parser.add_argument('--smoke-browser-result',type=Path,help='Run a blank bundled-browser diagnostic, save JSON and exit; no external website')
+    parser.add_argument('--smoke-news-result',type=Path,help='Attempt one fixed public article with normal checks; retain metadata only')
     args=parser.parse_args()
+    if args.smoke_news_result:
+        from newsdesk.smoke import public_source_smoke
+        args.smoke_news_result.parent.mkdir(parents=True,exist_ok=True)
+        result=public_source_smoke(args.smoke_news_result.parent)
+        args.smoke_news_result.write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')
+        return 0
+    if args.smoke_browser_result:
+        from newsdesk.smoke import browser_smoke
+        args.smoke_browser_result.parent.mkdir(parents=True,exist_ok=True)
+        try:result=browser_smoke()
+        except Exception as error:result={'ok':False,'error':str(error),'external_navigation':False}
+        args.smoke_browser_result.write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')
+        return 0 if result['ok'] else 1
     if not 1024<=args.port<=65535:parser.error('端口需为1024至65535')
     base=Path(sys.executable).parent if getattr(sys,'frozen',False) else Path(__file__).resolve().parent
     root=args.data_dir or Path(os.environ.get('NEWSDESK_DATA_DIR',base/'data'))

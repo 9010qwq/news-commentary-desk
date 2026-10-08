@@ -1,11 +1,18 @@
 name: Build Windows portable (manual)
 on:
   workflow_dispatch:
+    inputs:
+      publish_prerelease:
+        description: Publish this exact smoke-passed build as v0.2.0-rc1 prerelease
+        required: true
+        type: boolean
+        default: false
 permissions:
   contents: read
 jobs:
   portable:
     runs-on: windows-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -22,9 +29,52 @@ jobs:
           python -m playwright install chromium
           python -m PyInstaller --noconfirm --clean --onedir --name NewsDesk --add-data 'newsdesk/static;newsdesk/static' --collect-all playwright --collect-all trafilatura --collect-all keyring --collect-all tzdata --hidden-import keyring.backends.Windows launch.py
           Copy-Item README.md,LICENSE,THIRD_PARTY_NOTICES.md dist/NewsDesk/
-          Compress-Archive -Path dist/NewsDesk -DestinationPath dist/NewsDesk-Windows-Portable.zip
+          Copy-Item docs -Destination dist/NewsDesk/ -Recurse
+      - name: Run actual Windows portable smoke test
+        run: python tools/windows_smoke.py --exe dist/NewsDesk/NewsDesk.exe --output smoke-output --public-source-once
+      - name: Archive smoke-checked portable folder
+        shell: pwsh
+        run: Compress-Archive -Path dist/NewsDesk -DestinationPath dist/NewsDesk-Windows-Portable.zip
       - uses: actions/upload-artifact@v4
         with:
           name: NewsDesk-Windows-Portable
           path: dist/NewsDesk-Windows-Portable.zip
           retention-days: 14
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: NewsDesk-Windows-Smoke-Report
+          path: smoke-output/
+          if-no-files-found: warn
+          retention-days: 14
+  prerelease:
+    needs: portable
+    if: ${{ inputs.publish_prerelease }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: NewsDesk-Windows-Portable
+          path: release
+      - name: Publish exact candidate without overwriting tags or releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG=v0.2.0-rc1
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Release already exists. Refusing to replace it."
+            exit 1
+          fi
+          if gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$TAG" >/dev/null 2>&1; then
+            echo "Tag already exists. Refusing to reuse or move it."
+            exit 1
+          fi
+          (cd release && sha256sum NewsDesk-Windows-Portable.zip > SHA256SUMS.txt)
+          gh api --method POST "repos/$GITHUB_REPOSITORY/git/refs" -f ref="refs/tags/$TAG" -f sha="$GITHUB_SHA" >/dev/null
+          gh release create "$TAG" release/NewsDesk-Windows-Portable.zip release/SHA256SUMS.txt --repo "$GITHUB_REPOSITORY" --verify-tag --prerelease --title "NewsDesk 0.2.0-rc1 · Windows preview" --notes-file docs/RELEASE_NOTES.md
+          gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json url,tagName,isPrerelease

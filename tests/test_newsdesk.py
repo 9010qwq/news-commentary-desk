@@ -16,6 +16,7 @@ from newsdesk.exporter import export_package,days,safe_cell,safe_filename
 from newsdesk.mailer import send_package
 from newsdesk.main import create_app
 from newsdesk.collector import collect_day
+from newsdesk.smoke import browser_smoke,public_source_smoke
 
 def article(url='https://www.bjnews.com.cn/detail/123.html',title='测试新闻 | 新京报快评',author=''):
     return ('<html><head><meta charset="utf-8"></head><body><div class="bodyTitle"><h1>'+title+'</h1></div><div class="timer">2026-10-08 16:36</div><div class="reporter">编辑：甲乙</div><div id="contentStr">'+('<p>这是一段关于公共事件的评论正文，并对公共政策展开分析，明确表达观点。</p>'*8)+(f'<p>撰稿 / {author}</p>' if author else '')+'</div></body></html>').encode()
@@ -178,5 +179,39 @@ class CollectorTests(unittest.TestCase):
         r=self.run_collect(fail=True);self.assertEqual((r['articles'],r['screenshots'],r['shortfall']),(5,0,5))
     def test_retry_only_failed_screenshots(self):
         self.run_collect(fail=True);r=self.run_collect();self.assertEqual((r['articles'],r['screenshots']),(5,5))
+
+class BrowserSmokeTests(unittest.TestCase):
+    def test_public_source_blocked_no_retry(self):
+        with patch('newsdesk.smoke.Fetcher') as factory:
+            fetcher=factory.return_value;fetcher.get.side_effect=ValueError('robots denies test')
+            result=public_source_smoke();self.assertEqual(result['status'],'blocked');self.assertIn('robots',result['error']);self.assertEqual(result['attempts'],1)
+            fetcher.get.assert_called_once();fetcher.close.assert_called_once()
+    def test_public_source_does_not_retain_article_or_image(self):
+        import struct
+        with tempfile.TemporaryDirectory() as root,patch('newsdesk.smoke.Fetcher') as fetch,patch('newsdesk.smoke.Screenshots') as shot,patch('newsdesk.smoke.parse_article') as parse:
+            fetch.return_value.get.return_value=(b'<article>test fixture only</article>','https://www.bjnews.com.cn/detail/1791448580169401.html')
+            parse.return_value={'date':'2026-10-08','title':'离加油站20米 测试快评','author':'陈广江','media':'新京报','published_at':'2026-10-08','url':'https://www.bjnews.com.cn/detail/1791448580169401.html','body':'TEST_BODY_NEVER_RETAIN'}
+            browser=shot.return_value.__enter__.return_value;browser.pw.chromium.executable_path='/tmp/chrome'
+            def fake_capture(a,path):Path(path).write_bytes(b'\x89PNG\r\n\x1a\n'+b'\x00\x00\x00\rIHDR'+struct.pack('>II',1440,3000)+b'X'*9000)
+            browser.capture.side_effect=fake_capture
+            result=public_source_smoke(root);self.assertEqual(result['status'],'passed');self.assertNotIn('TEST_BODY_NEVER_RETAIN',json.dumps(result));self.assertEqual(list(Path(root).iterdir()),[])
+    def test_blank_diagnostic_only(self):
+        with patch('newsdesk.smoke.Screenshots') as factory:
+            browser=factory.return_value.__enter__.return_value
+            browser.pw.chromium.executable_path='/tmp/newsdesk-smoke/chrome'
+            browser.browser.version='test-version'
+            page=browser.context.new_page.return_value;page.locator.return_value.inner_text.return_value='NewsDesk browser smoke'
+            result=browser_smoke();self.assertTrue(result['ok']);self.assertFalse(result['external_navigation']);self.assertFalse(result['news_capture_verified'])
+            page.goto.assert_not_called();page.close.assert_called_once()
+    def test_wrong_blank_dom_fails(self):
+        with patch('newsdesk.smoke.Screenshots') as factory:
+            browser=factory.return_value.__enter__.return_value;browser.pw.chromium.executable_path='/tmp/chrome'
+            browser.context.new_page.return_value.locator.return_value.inner_text.return_value='wrong'
+            with self.assertRaises(ValueError):browser_smoke()
+    def test_frozen_browser_path_reported(self):
+        with patch('newsdesk.smoke.Screenshots') as factory,patch('sys.frozen',True,create=True),patch('sys._MEIPASS','/tmp/newsdesk-smoke',create=True):
+            browser=factory.return_value.__enter__.return_value;browser.pw.chromium.executable_path='/tmp/newsdesk-smoke/browser/chrome';browser.browser.version='test-version'
+            browser.context.new_page.return_value.locator.return_value.inner_text.return_value='NewsDesk browser smoke'
+            result=browser_smoke();self.assertTrue(result['frozen']);self.assertTrue(result['bundled_browser'])
 
 if __name__=='__main__':unittest.main()

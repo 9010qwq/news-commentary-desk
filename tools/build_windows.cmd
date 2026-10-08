@@ -16,6 +16,7 @@ if errorlevel 1 goto failed
 copy README.md dist\NewsDesk\
 copy LICENSE dist\NewsDesk\
 copy THIRD_PARTY_NOTICES.md dist\NewsDesk\
+xcopy docs dist\NewsDesk\docs\ /E /I /Y
 echo Build produced dist\NewsDesk\NewsDesk.exe. Test it on a clean Windows machine before sharing.
 pause
 exit /b 0

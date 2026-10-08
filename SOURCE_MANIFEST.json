@@ -3,8 +3,8 @@
   "files": [
     {
       "path": ".github/workflows/windows-build.yml",
-      "bytes": 1272,
-      "sha256": "cddf9bcf4c749ef7c6ed214942b583249103d5d6c2d8d5d6149b06ba1345ec24"
+      "bytes": 3440,
+      "sha256": "3864607644fa10e6851e3ed767b55ee1003f5492d0d9600c1674768b66f67931"
     },
     {
       "path": ".gitignore",
@@ -18,8 +18,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 9080,
-      "sha256": "dee30f4eedfaae497bec8f9ae8a702c2eef26f58beffcabba96498052bd4acb4"
+      "bytes": 9425,
+      "sha256": "015d2239739cee26461ebde7d41ebd3f78c1934f3ec78b290490565ce0837186"
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
@@ -32,19 +32,24 @@
       "sha256": "c9e38d8bb4ffd82e48ea48731ae846ba2cd33984a668567f0b84d20dd590e16d"
     },
     {
+      "path": "docs/RELEASE_NOTES.md",
+      "bytes": 2525,
+      "sha256": "b483e34b0cbddf1122fc37294724952ca3f4af4f39d333cb7c3a9fdad018a30a"
+    },
+    {
       "path": "docs/SECURITY.md",
       "bytes": 2154,
       "sha256": "39f0d4bb281c5487dce314aa11af832def517053fbe6cbada3ec33052be3bfa3"
     },
     {
       "path": "docs/TEST_REPORT.md",
-      "bytes": 5369,
-      "sha256": "97cac8ccd03598f485f1012450d82d5117f9c62edfe52124bc0646248c42113a"
+      "bytes": 6959,
+      "sha256": "338f1832d22960f9759b487617e79fd4c5037c267638913d8c9de5826a609ffa"
     },
     {
       "path": "launch.py",
-      "bytes": 2454,
-      "sha256": "b241e8e406084ef52b89006b4b334a8586fc81319ff0bc73933b2cfe6f29f05f"
+      "bytes": 3536,
+      "sha256": "d474c53760c9cdcd59fe22c39079d0cbf972a0a9adc34cdcf897e69d46b4c744"
     },
     {
       "path": "newsdesk/__init__.py",
@@ -97,6 +102,11 @@
       "sha256": "663570e81b31736c832dd970dcb792c7b2ad487c17796ab3d68acc4502eb0d30"
     },
     {
+      "path": "newsdesk/smoke.py",
+      "bytes": 3539,
+      "sha256": "a3052499a03df449b506bd365ae0e6624e55a69e65adc227ecd3babc2c223caa"
+    },
+    {
       "path": "newsdesk/sources.py",
       "bytes": 12530,
       "sha256": "26073a9b0aaf3e1bcf4b095762b8a3c47e242216236eb2f1cec4bb8868c25cef"
@@ -143,13 +153,18 @@
     },
     {
       "path": "tests/test_newsdesk.py",
-      "bytes": 14666,
-      "sha256": "746a0d7f9d4d5507a96059be004fa7ae6bffc14ed71bc86794eb43fa246eb0e4"
+      "bytes": 18063,
+      "sha256": "8abd759707eac0a2487490fe914446fe62c4d6318bd3cc783dc5b45d97c3c562"
     },
     {
       "path": "tools/build_windows.cmd",
-      "bytes": 1155,
-      "sha256": "730e315c7f0c7fff6f036a077ceaa54a4b2f4a3e2e5b6719a4e565978671fe73"
+      "bytes": 1195,
+      "sha256": "4ef8cc37fae39ad597f48f49e53f9aa3ecae1742b78334d7e03cbc1e632f18df"
+    },
+    {
+      "path": "tools/windows_smoke.py",
+      "bytes": 10756,
+      "sha256": "dd8d38fa7d5352c15d54163afbb381893f2402e73788027c94afa74c483c64b2"
     },
     {
       "path": "安装与启动.cmd",

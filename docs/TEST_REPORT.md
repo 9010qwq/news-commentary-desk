@@ -2,9 +2,9 @@
 
 本记录明确区分已通过、被环境阻断和未执行。离线样例/模拟邮件不等于真实联网端到端成功。没有真实 API 费用，没有向任何邮箱发送真实邮件。
 
-## 通过：54 项离线自动化测试
+## 通过：59 项离线自动化测试
 
-命令：`python -m unittest discover -s tests -v`，在云端 Linux / Python 3.12 环境执行。包括：
+命令：`python -m unittest discover -s tests -v`，最新59项在云端 Linux / Python 3.12 环境执行。初始版本54项也在 Windows GitHub Runner / Python 3.11 通过。包括：
 
 - 日期边界、周四北京时间14:00、前一周四至本周三7个完整自然日、每日时区与周报时区分离、周五不静默补发
 - 五家内置媒体与用户添加公开媒体 URL 校验、本机/IP/保留域名拒绝、拒访和 robots 约束、重定向目标重新校验
@@ -46,11 +46,19 @@
 
 因此本次**未验证**：应用内真实Playwright整页截图、完整每日5篇采集/补采/导出端到端、真实浏览器按钮/下载器/响应式像素效果。已有源码实现和离线测试不能代替这些阶段。
 
+## Windows CI 进展
+
+初始公开提交 `cb258d4835296217e6e78fa19eff8b6159689c1b` 的 [Windows 构建 #1](https://github.com/9010qwq/news-commentary-desk/actions/runs/37811248938) 已通过54项测试和PyInstaller打包，生成约409.5MB便携ZIP；该运行尚未执行生成的EXE。
+
+后续工作流新增 `tools/windows_smoke.py`：使用全新临时数据，真正运行刚打包的EXE；通过其诊断入口检查同包Chromium，连接本机UI、保存/重载设置并下载空白周报。空白界面浏览器只允许访问本机测试地址，不调用真实API/SMTP。其后单独使用冻结EXE的生产Fetcher/parse_article/Screenshots，最多一次尝试指定新京报公开原文；正常公网、robots及证书检查，核对标题/日期/署名和PNG尺寸后删除临时截图。只保留元数据或明确阻断原因，不上传新闻HTML、正文或原页截图。这一有界尝试被阻断时不会绕过或重试，也不把空白UI成功改称新闻截图成功。此新增检查在本文件编写时待Windows运行；以对应Actions报告为准。即使通过，也不能替代真实新闻截图与投递端到端验收。
+
+预发布默认关闭；只有维护者明确勾选publish_prerelease且完整Windows任务通过，独立release job才使用本次GitHub内置临时token在同仓库创建候选标签/Release。不会创建长期密钥、扩展仓库设置、覆盖既有标签。
+
 ## 尚未执行
 
-- Windows原生双击安装/启动、无Python的便携EXE构建和实机运行、中文路径/字体、Windows凭据管理器
+- 用户电脑的Windows原生双击安装/启动、干净无Python电脑实机运行、中文路径/字体、Windows凭据管理器
 - 真实SMTP服务的登录/TLS/发送/送达、真实付费模型接口、真实周四定时运行
 - Microsoft Excel 原生打开与排版、Windows安全签名、第三方安全审计、完整DNS重绑定防护
-- 发布版本的最终CI状态以仓库为准；本文件不把未运行的Windows构建称为通过
+- 成品EXE/界面新冒烟的最终CI状态以对应运行报告为准；初始仅打包通过不等于已运行通过
 
-发布者须完成 [发布验收单](RELEASE_CHECKLIST.md)。本版定位是：功能代码与本地逻辑已实现、带明确限制的可试用源码；原生Windows成品仍需构建和实机验收。
+发布者须完成 [发布验收单](RELEASE_CHECKLIST.md)。本版定位是带明确限制的试用候选：功能代码与本地逻辑已实现，初始Windows构建已通过；成品运行与用户电脑实机验收按CI报告和发布验收单逐项确认。
