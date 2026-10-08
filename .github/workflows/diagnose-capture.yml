@@ -1,0 +1,31 @@
+name: Diagnose one public-page capture (manual)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  diagnose:
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install normal application dependencies and official Chromium
+        run: |
+          python -m pip install -r requirements.txt
+          python -m playwright install chromium
+      - name: One production-code attempt with sanitized stage diagnostics
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force diagnostic-output | Out-Null
+          python launch.py --smoke-news-result diagnostic-output/report.json
+          Get-Content diagnostic-output/report.json -Encoding utf8
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: NewsDesk-Capture-Diagnostic
+          path: diagnostic-output/report.json
+          if-no-files-found: warn
+          retention-days: 14

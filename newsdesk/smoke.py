@@ -1,7 +1,7 @@
 """Optional CI checks: blank browser plus a separate fixed-public-page diagnostic; no user data."""
 import sys,tempfile,struct
 from pathlib import Path
-from .browser import Screenshots
+from .browser import Screenshots,failure_category
 from .network import Fetcher
 from .sources import parse_article
 
@@ -24,7 +24,7 @@ def browser_smoke():
 
 def public_source_smoke(scratch_dir=None):
     """One attempt using production fetch/parser/capture; never retain article bytes or image."""
-    report={'ok':False,'status':'blocked','url':PUBLIC_SMOKE_URL,'attempts':1,
+    report={'ok':False,'status':'failed','url':PUBLIC_SMOKE_URL,'attempts':1,
             'frozen':bool(getattr(sys,'frozen',False)),'api_calls':0,'smtp_messages':0,
             'article_html_retained':False,'article_body_retained':False,'screenshot_retained':False,
             'screenshot_visually_reviewed':False,'full_daily_or_email_workflow_verified':False}
@@ -51,5 +51,17 @@ def public_source_smoke(scratch_dir=None):
         report.update(ok=True,status='passed')
     except Exception as error:
         report['error']=str(error)[:800] if isinstance(error,ValueError) else type(error).__name__+' during the one public-source attempt'
+        if hasattr(error,'diagnostics'):report['diagnostics']=error.diagnostics
+        diagnostic=report.get('diagnostics',{})
+        category=diagnostic.get('error_category') or failure_category(error)
+        report['error_category']=category
+        safety_denial=(diagnostic.get('main_http_status') in {401,403,429}
+                       or diagnostic.get('navigation_denial')=='ROBOTS_DENIED'
+                       or category in {'SITE_ACCESS_CHALLENGE','ERR_BLOCKED_BY_ADMINISTRATOR','DESTINATION_POLICY_REFUSAL'}
+                       or str(category).startswith('ERR_CERT')
+                       or 'robots 规则禁止' in str(error)
+                       or '媒体站点拒绝或限流' in str(error))
+        report['safety_denial_confirmed']=safety_denial
+        if safety_denial:report['status']='blocked'
     finally:fetcher.close()
     return report

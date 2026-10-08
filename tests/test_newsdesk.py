@@ -17,6 +17,7 @@ from newsdesk.mailer import send_package
 from newsdesk.main import create_app
 from newsdesk.collector import collect_day
 from newsdesk.smoke import browser_smoke,public_source_smoke
+from newsdesk.browser import failure_category
 
 def article(url='https://www.bjnews.com.cn/detail/123.html',title='测试新闻 | 新京报快评',author=''):
     return ('<html><head><meta charset="utf-8"></head><body><div class="bodyTitle"><h1>'+title+'</h1></div><div class="timer">2026-10-08 16:36</div><div class="reporter">编辑：甲乙</div><div id="contentStr">'+('<p>这是一段关于公共事件的评论正文，并对公共政策展开分析，明确表达观点。</p>'*8)+(f'<p>撰稿 / {author}</p>' if author else '')+'</div></body></html>').encode()
@@ -181,6 +182,12 @@ class CollectorTests(unittest.TestCase):
         self.run_collect(fail=True);r=self.run_collect();self.assertEqual((r['articles'],r['screenshots']),(5,5))
 
 class BrowserSmokeTests(unittest.TestCase):
+    def test_capture_diagnostics_drop_urls_and_payloads(self):
+        self.assertEqual(failure_category(RuntimeError('Page.goto: net::ERR_CERT_AUTHORITY_INVALID at https://private.example/?secret=abc')),'ERR_CERT_AUTHORITY_INVALID')
+        self.assertEqual(failure_category(RuntimeError('Refused unsafe-eval by Content Security Policy: secret')),'CSP_EVALUATION_BLOCKED')
+        self.assertEqual(failure_category(RuntimeError('Timeout 30000 exceeded waiting for fonts to load: private')),'FONT_READINESS_TIMEOUT')
+        self.assertEqual(failure_category(RuntimeError('net::ERR_HTTP2_PROTOCOL_ERROR at https://private.example/')),'ERR_HTTP2_PROTOCOL_ERROR')
+        self.assertEqual(failure_category(ValueError('拒绝本机、局域网及保留网络地址')),'DESTINATION_POLICY_REFUSAL')
     def test_dashboard_smoke_has_no_csp_sensitive_eval(self):
         source=(Path(__file__).resolve().parent.parent/'tools'/'windows_smoke.py').read_text(encoding='utf-8')
         for unsafe_call in ('.wait_for_function(','.evaluate(','.evaluate_handle('):self.assertNotIn(unsafe_call,source)
@@ -191,9 +198,13 @@ class BrowserSmokeTests(unittest.TestCase):
         self.assertTrue(json.dumps({'message':'中文验证'},ensure_ascii=True).encode('cp1252'))
     def test_public_source_blocked_no_retry(self):
         with patch('newsdesk.smoke.Fetcher') as factory:
-            fetcher=factory.return_value;fetcher.get.side_effect=ValueError('robots denies test')
+            fetcher=factory.return_value;fetcher.get.side_effect=ValueError('站点 robots 规则禁止此路径自动采集')
             result=public_source_smoke();self.assertEqual(result['status'],'blocked');self.assertIn('robots',result['error']);self.assertEqual(result['attempts'],1)
             fetcher.get.assert_called_once();fetcher.close.assert_called_once()
+    def test_generic_timeout_not_claimed_as_security_denial(self):
+        with patch('newsdesk.smoke.Fetcher') as factory:
+            factory.return_value.get.side_effect=ValueError('媒体网页连接失败或超时')
+            result=public_source_smoke();self.assertEqual(result['status'],'failed');self.assertFalse(result['safety_denial_confirmed'])
     def test_public_source_does_not_retain_article_or_image(self):
         import struct
         with tempfile.TemporaryDirectory() as root,patch('newsdesk.smoke.Fetcher') as fetch,patch('newsdesk.smoke.Screenshots') as shot,patch('newsdesk.smoke.parse_article') as parse:

@@ -1,6 +1,11 @@
 {
-  "version": "0.2.0-rc1",
+  "version": "0.2.0-rc1-diagnostic",
   "files": [
+    {
+      "path": ".github/workflows/diagnose-capture.yml",
+      "bytes": 1052,
+      "sha256": "1132b8bf4b8d3cf548a11d228ef7a459ae9454400eddb4bd3e93eea6f5684aad"
+    },
     {
       "path": ".github/workflows/windows-build.yml",
       "bytes": 3419,
@@ -43,8 +48,8 @@
     },
     {
       "path": "docs/TEST_REPORT.md",
-      "bytes": 8211,
-      "sha256": "5a30e98d01ffddc15e9147e4a043f23f0bb6a2a7f31b9decf7334c0c04f52621"
+      "bytes": 9187,
+      "sha256": "3018b49dd9c13921dab39b5d2dc3f37025c4f03f1bf9afd35f1f53653de6a546"
     },
     {
       "path": "launch.py",
@@ -63,8 +68,8 @@
     },
     {
       "path": "newsdesk/browser.py",
-      "bytes": 4458,
-      "sha256": "867da6ca47a8510c63fb6538ee326c5faa3c41a4b5f49dc7afa5ad929222d92a"
+      "bytes": 7379,
+      "sha256": "8025788dd94bb2783f21a03aafa3a1bf751579a1c9060da78cd062b87b8cd9fd"
     },
     {
       "path": "newsdesk/collector.py",
@@ -103,8 +108,8 @@
     },
     {
       "path": "newsdesk/smoke.py",
-      "bytes": 3539,
-      "sha256": "a3052499a03df449b506bd365ae0e6624e55a69e65adc227ecd3babc2c223caa"
+      "bytes": 4384,
+      "sha256": "53f6ae021e6168c21a1ddfa1f83e634d94fea5eab1a7cb9259f4d2d7f6743c1c"
     },
     {
       "path": "newsdesk/sources.py",
@@ -153,8 +158,8 @@
     },
     {
       "path": "tests/test_newsdesk.py",
-      "bytes": 18817,
-      "sha256": "5eeb481eb770bc6849bb4e4cdc0b1715f26ccfc9d05222f3cfbc7679cab3329a"
+      "bytes": 20045,
+      "sha256": "813feabf39746255c3012d36f62b49cfbef5be720075a9d2aa5123de6d9c806b"
     },
     {
       "path": "tools/build_windows.cmd",

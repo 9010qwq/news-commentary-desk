@@ -1,14 +1,28 @@
 from __future__ import annotations
 from pathlib import Path
-import os
+import os,re,time
 from urllib.parse import urlsplit
 from .network import public_url,Fetcher
 from .config import source_of
 from .sources import clean
 
+def failure_category(error):
+    message=str(error)
+    code=re.search(r'net::(ERR_[A-Z0-9_]+)',message)
+    if code:return code.group(1)
+    if any(marker in message for marker in ('拒绝本机','媒体链接必须使用公开域名','不安全的网络地址','只接受无账号信息')):return 'DESTINATION_POLICY_REFUSAL'
+    if 'unsafe-eval' in message or 'Content Security Policy' in message:return 'CSP_EVALUATION_BLOCKED'
+    if 'waiting for fonts' in message.lower() and 'fonts loaded' not in message.lower():return 'FONT_READINESS_TIMEOUT'
+    if 'Timeout' in type(error).__name__ or 'Timeout ' in message:return 'TIMEOUT'
+    return type(error).__name__
+
+class CaptureError(ValueError):
+    def __init__(self,message,diagnostics):
+        super().__init__(message);self.diagnostics=dict(diagnostics)
+
 class Screenshots:
     """Original website browser captures only. No HTML replacement or synthetic article cards."""
-    def __init__(self,policy=None):self.policy=policy;self.fetcher=None
+    def __init__(self,policy=None):self.policy=policy;self.fetcher=None;self.diagnostics={}
     def __enter__(self):
         try:
             if self.policy is None:self.fetcher=Fetcher();self.policy=self.fetcher.allowed
@@ -35,16 +49,35 @@ class Screenshots:
             # No media playback or writes to publishers while archiving.
             if request.resource_type in {'media','websocket'} or request.method not in {'GET','HEAD'}:return route.abort()
             route.continue_()
-        except Exception:route.abort()
+        except Exception as error:
+            self.diagnostics['route_denials']=self.diagnostics.get('route_denials',0)+1
+            try:
+                if request.is_navigation_request() and request.frame==request.frame.page.main_frame:
+                    self.diagnostics['navigation_denial']='ROBOTS_DENIED' if 'robots' in str(error).lower() and '禁止' in str(error) else failure_category(error)
+            except Exception:pass
+            route.abort()
     def capture(self,article,path):
         source_of(article['url']);public_url(article['url'])
+        started=time.monotonic();self.diagnostics={'stage':'navigate','main_http_status':None,'route_denials':0,'request_failures':{}}
         page=self.context.new_page()
+        def response_status(response):
+            try:
+                if response.request.is_navigation_request() and response.request.frame==page.main_frame:self.diagnostics['main_http_status']=response.status
+            except Exception:pass
+        def request_failed(request):
+            code=failure_category(RuntimeError(request.failure or 'request_failed'))
+            failures=self.diagnostics['request_failures'];failures[code]=failures.get(code,0)+1
+        page.on('response',response_status);page.on('requestfailed',request_failed)
         try:
             response=page.goto(article['url'],wait_until='domcontentloaded',timeout=35000)
-            if response is None or response.status>=400:raise ValueError('原页访问失败，未生成截图')
+            if response is None or response.status>=400:raise ValueError(f'原页访问失败（HTTP {response.status if response else "unknown"}），未生成截图')
+            self.diagnostics['stage']='visible_article'
             page.wait_for_timeout(2200)
             title=clean(article['title']);short=title[:14]
             visible=clean(page.locator('body').inner_text(timeout=6000))
+            if short not in visible and title[-14:] not in visible and any(marker in visible for marker in ('验证码','请完成验证','验证您是人类','Access Denied','Checking your browser')):
+                self.diagnostics['error_category']='SITE_ACCESS_CHALLENGE'
+                raise ValueError('原站显示访问验证或拒绝页面，已停止；未尝试完成验证')
             if len(visible)<150 or (short not in visible and title[-14:] not in visible):raise ValueError('原页标题/正文未正常显示，未把空壳当截图')
             selectors={'cctv':'#text_area','bjnews':'#contentStr','people':'#ozoom','xinhua':'#detailContent','thepaper':'[class*="cententWrap"]'}
             matches=page.locator(selectors.get(article['source_id'],'article, main, [role="main"]'));visible_body=False
@@ -54,16 +87,22 @@ class Screenshots:
                     if loc.is_visible() and len(clean(loc.inner_text()))>=100:visible_body=True;break
             if not visible_body:raise ValueError('未识别到可见的原页正文；未把标题/加载壳当截图')
             # Scroll naturally to load lazy images without changing page content.
+            self.diagnostics['stage']='scroll_lazy_images'
             height=page.evaluate('document.documentElement.scrollHeight')
             if height>40000:raise ValueError('原页过长，超过安全截图上限；请人工核对原文')
             for y in range(0,min(height,20000),900):page.evaluate('(y)=>window.scrollTo(0,y)',y);page.wait_for_timeout(70)
             page.evaluate('window.scrollTo(0,0)');page.wait_for_timeout(300)
             path=Path(path);path.parent.mkdir(parents=True,exist_ok=True)
+            self.diagnostics['stage']='screenshot'
             page.screenshot(path=str(path),full_page=True,timeout=30000)
+            self.diagnostics['stage']='validate_png'
             if path.stat().st_size<8000:raise ValueError('截图文件过小，需人工复核')
             return str(page.url)
-        except ValueError:raise
-        except Exception:raise ValueError('浏览器截图失败或超时；未尝试绕过站点验证或安全限制') from None
+        except Exception as error:
+            self.diagnostics.setdefault('error_category',failure_category(error))
+            self.diagnostics['elapsed_seconds']=round(time.monotonic()-started,2)
+            detail=str(error) if isinstance(error,ValueError) else '浏览器截图失败：'+self.diagnostics['stage']+' / '+self.diagnostics['error_category']
+            raise CaptureError(detail+'；未绕过站点验证或安全限制',self.diagnostics) from None
         finally:page.close()
     def __exit__(self,*args):
         self.context.close();self.browser.close();self.pw.stop()
