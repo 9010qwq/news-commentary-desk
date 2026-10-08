@@ -181,6 +181,9 @@ class CollectorTests(unittest.TestCase):
         self.run_collect(fail=True);r=self.run_collect();self.assertEqual((r['articles'],r['screenshots']),(5,5))
 
 class BrowserSmokeTests(unittest.TestCase):
+    def test_dashboard_smoke_has_no_csp_sensitive_eval(self):
+        source=(Path(__file__).resolve().parent.parent/'tools'/'windows_smoke.py').read_text(encoding='utf-8')
+        for unsafe_call in ('.wait_for_function(','.evaluate(','.evaluate_handle('):self.assertNotIn(unsafe_call,source)
     def test_public_source_blocked_no_retry(self):
         with patch('newsdesk.smoke.Fetcher') as factory:
             fetcher=factory.return_value;fetcher.get.side_effect=ValueError('robots denies test')

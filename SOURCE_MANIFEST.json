@@ -43,8 +43,8 @@
     },
     {
       "path": "docs/TEST_REPORT.md",
-      "bytes": 6959,
-      "sha256": "338f1832d22960f9759b487617e79fd4c5037c267638913d8c9de5826a609ffa"
+      "bytes": 7386,
+      "sha256": "21474fbd3352e4aaa0219557eca87b83b60bbfa898d4348e623775ab8b993e5b"
     },
     {
       "path": "launch.py",
@@ -153,8 +153,8 @@
     },
     {
       "path": "tests/test_newsdesk.py",
-      "bytes": 18063,
-      "sha256": "8abd759707eac0a2487490fe914446fe62c4d6318bd3cc783dc5b45d97c3c562"
+      "bytes": 18357,
+      "sha256": "f92941bad433dbf9ad0967ab339d186281041822dd9f9af3198b323d20f3908d"
     },
     {
       "path": "tools/build_windows.cmd",
@@ -163,8 +163,8 @@
     },
     {
       "path": "tools/windows_smoke.py",
-      "bytes": 10756,
-      "sha256": "dd8d38fa7d5352c15d54163afbb381893f2402e73788027c94afa74c483c64b2"
+      "bytes": 10725,
+      "sha256": "f78d844869b5515e5238b5d50d80134b7e173534f938faa5567768dccb8d4edb"
     },
     {
       "path": "安装与启动.cmd",

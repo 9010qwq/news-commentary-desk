@@ -8,7 +8,7 @@ from __future__ import annotations
 import argparse,json,os,socket,subprocess,tempfile,time,urllib.request,zipfile
 from contextlib import nullcontext
 from pathlib import Path
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import sync_playwright,expect
 
 def check(condition,message):
     if not condition:raise AssertionError(message)
@@ -72,13 +72,13 @@ def main():
                 check(not page.locator('#auto-collect').is_checked() and not page.locator('#weekly-email').is_checked(),'UI must show automatic tasks off')
                 page.locator('#settings-details > summary').click()
                 page.locator('#target-count').fill('6');page.locator('#save-settings').click()
-                page.wait_for_function("document.querySelector('#message').textContent.includes('设置已保存')")
+                expect(page.locator('#message')).to_contain_text('设置已保存',timeout=15000)
                 check(get('/api/state',token)['settings']['target_count']==6,'UI settings did not persist in actual backend')
                 page.reload(wait_until='networkidle');page.locator('#connection.online').wait_for()
                 check(page.locator('#target-count').input_value()=='6','Settings did not survive page reload')
                 page.locator('#settings-details > summary').click()
                 page.locator('#target-count').fill('5');page.locator('#save-settings').click()
-                page.wait_for_function("document.querySelector('#message').textContent.includes('设置已保存')")
+                expect(page.locator('#message')).to_contain_text('设置已保存',timeout=15000)
                 check(get('/api/state',token)['settings']['target_count']==5,'Restoring test default failed')
                 report['tests'].append('real dashboard controls save and reload local settings')
                 # Export an empty report through the real UI. It must show missing items, never fabricated news.
